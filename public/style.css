@@ -1,0 +1,19 @@
+html {
+    background-color: #262626;
+    font-family: 'Arial';
+}
+
+body{
+   
+    color: white;
+}
+
+.link {
+    text-align: left;
+    color: red;
+    font-size: 20px;
+}
+
+main {
+    text-align: center;
+}
