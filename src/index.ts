@@ -1,6 +1,8 @@
-import express, { Request, Response } from "express"
-import mongoose from "mongoose"
-import User from "./models/User"
+import express from "express";
+import usersRouter from "./routes/users.routes";
+import {connectDB} from "./config/connectDB";
+import swaggerSpec from "./config/openAPI";
+import swaggerUi from 'swagger-ui-express';
 const app = express()
 const port = 3000
 
@@ -8,7 +10,18 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(express.static('public'));
 
-app.set("view engine","ejs")
+//app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec.swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  swaggerOptions: {
+    url: '/api-docs.json'
+  }
+}));
+
+app.use("/users", usersRouter);
+
+connectDB()
+
+/*app.set("view engine","ejs")
 
 mongoose.connect("mongodb://admin:1234@localhost:27017/web2?authSource=admin").then(()=>console.log("DB connected!")).catch((err)=>console.error(err))
 
@@ -51,7 +64,10 @@ app.delete('/users', async (req: Request, res: Response) => {
     } catch (e) {
         res.status(400).json({message: (e as Error).message})
     }
-})
+})*/
+
+// После создания swaggerSpec
+
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
