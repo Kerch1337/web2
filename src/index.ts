@@ -1,5 +1,6 @@
 import express from "express";
 import usersRouter from "./routes/users.routes";
+import authRouter from "./routes/auth.routes";
 import {connectDB} from "./config/connectDB";
 import swaggerSpec from "./config/openAPI";
 import swaggerUi from 'swagger-ui-express';
@@ -18,6 +19,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 }));
 
 app.use("/users", usersRouter);
+app.use("/auth", authRouter);
 
 connectDB()
 
