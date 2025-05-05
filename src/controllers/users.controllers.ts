@@ -21,6 +21,7 @@ export const getUsers = async (req: Request, res: Response) => {
 }
 
 export const deleteUser = async (req: Request, res: Response) => {
+
     const { userId } = req.body;
     try {
         const deletedUser = await User.findByIdAndDelete(userId)

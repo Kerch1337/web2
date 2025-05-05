@@ -1,5 +1,7 @@
 import {Router} from "express";
 import {deleteUser, getUsers, createUser, updateUser} from "../controllers/users.controllers";
+import {getAuthMiddleware} from "../middlewares/authMiddleware"
+import {UserRoles} from "../models/User"
 
 const router = Router()
 
@@ -17,6 +19,7 @@ const router = Router()
  *     summary: Получить список всех пользователей
  *     description: Возвращает список всех пользователей.
  *     tags: [Users]
+ *     security: [{ bearerAuth: []}]
  *     responses:
  *       '202':
  *         description: Успех
@@ -43,7 +46,7 @@ const router = Router()
  *                  message:
  *                      type: string
  */
-router.get('/', getUsers);
+router.get('/', getAuthMiddleware([UserRoles.admin, UserRoles.moderator]), getUsers);
 
 /**
  * @openapi
@@ -103,6 +106,7 @@ router.post('/', createUser);
  *     summary: Удалить пользователя
  *     description: Удаляет пользователя из БД.
  *     tags: [Users]
+ *     security: [{ bearerAuth: []}]
  *     requestBody:
  *      required: true
  *      content:
@@ -140,7 +144,7 @@ router.post('/', createUser);
  *                  message:
  *                      type: string
  */
-router.delete('/', deleteUser);
+router.delete('/', getAuthMiddleware([UserRoles.admin]), deleteUser);
 
 /**
  * @openapi
