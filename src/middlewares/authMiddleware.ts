@@ -3,6 +3,16 @@ import jwt from "jsonwebtoken";
 import {JWT_SECRET} from "../config/constants";
 import {UserRoles} from "../models/User"
 
+declare module 'express-serve-static-core' {
+  interface Request {
+    user?: {
+      username: string;
+      email: string;
+      role: UserRoles;
+    };
+  }
+}
+
 export const getAuthMiddleware = function (roles: UserRoles[]) { 
     return (req: Request, res: Response, next: NextFunction)=>{
 
@@ -19,11 +29,15 @@ export const getAuthMiddleware = function (roles: UserRoles[]) {
 
     try{
         const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload
-        if(!roles.includes(decoded.role)){
+        if(!roles.includes(decoded.role as UserRoles)){
             res.status(403).json({message: "Role is not applicable for endpoint"})
             return;
         }
-        req.user = decoded
+        req.user = {
+        username: decoded.username as string,
+        email: decoded.email as string,
+        role: decoded.role as UserRoles
+      };
     } catch (e){
         res.status(401).json({message: "Invalid token"})
         return;
@@ -32,10 +46,10 @@ export const getAuthMiddleware = function (roles: UserRoles[]) {
     next()
 }}
 
-export interface RequestWithAuth extends Request {
+/*export interface RequestWithAuth extends Request {
     user: {
         username: String,
         email: string,
         role: UserRoles
     }
-}
+}*/

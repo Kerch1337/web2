@@ -1,29 +1,45 @@
-import swaggerJSDoc from "swagger-jsdoc";
-import path from "node:path";
+import path from "path";
+import { swaggerDoc as authDoc } from "../routes/auth.routes";
+import { swaggerDoc as usersDoc } from "../routes/users.routes";
 
 const swaggerDefinition = {
-    openapi: "3.0.0",
-    info: {
-        title: "Web technologies server",
-        version: "1.0.0",
-        description: "API documentation for my server",
-    },
-    components: {
-        securitySchemes: {
-            bearerAuth: {
-                type: "http",
-                scheme: "bearer",
-                bearerFormat: "JWT"
-            }
-        }
+  openapi: "3.0.0",
+  info: {
+    title: "Web Technologies API",
+    version: "1.0.0",
+    description: "API documentation for authentication and user management",
+    contact: {
+      name: "Your Name",
+      email: "your.email@example.com"
     }
+  },
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT"
+      }
+    },
+  },
+  tags: [
+    {
+      name: "Auth",
+      description: "Authentication endpoints"
+    },
+    {
+      name: "Users",
+      description: "User management endpoints"
+    }
+  ]
 };
 
-const options = {
-    swaggerDefinition,
-    apis: [path.resolve(__dirname, '../routes/*.ts')]
+const swaggerSpec = {
+  ...swaggerDefinition,
+  paths: {
+    ...authDoc.paths,
+    ...usersDoc.paths
+  }
 };
-
-const swaggerSpec = swaggerJSDoc(options);
 
 export default swaggerSpec;

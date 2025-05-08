@@ -3,7 +3,7 @@ import usersRouter from "./routes/users.routes";
 import authRouter from "./routes/auth.routes";
 import {connectDB} from "./config/connectDB";
 import swaggerSpec from "./config/openAPI";
-import swaggerUi from 'swagger-ui-express';
+import swaggerUi from "swagger-ui-express";
 const app = express()
 const port = 3000
 
@@ -23,6 +23,28 @@ app.use("/auth", authRouter);
 
 connectDB()
 
+app.get("/",(req, res)=>{
+    res.status(200).json({message: "Server is running!!!!"})
+})
+
+app.get("/api-docs.json", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.send(swaggerSpec);
+});
+
+import fs from "fs";
+import path from "path";
+
+// Логируем, какие файлы ищет Swagger
+const swaggerFiles = [
+  path.join(__dirname, "../dist/routes/auth.routes.js"),
+  path.join(__dirname, "../dist/routes/users.routes.js")
+];
+
+console.log("Swagger files existence:", {
+  authRouteExists: fs.existsSync(swaggerFiles[0]),
+  usersRouteExists: fs.existsSync(swaggerFiles[1])
+});
 /*app.set("view engine","ejs")
 
 mongoose.connect("mongodb://admin:1234@localhost:27017/web2?authSource=admin").then(()=>console.log("DB connected!")).catch((err)=>console.error(err))
